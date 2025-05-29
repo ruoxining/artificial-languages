@@ -18,9 +18,16 @@ def get_all_from_log(input_file: str):
         for i in range(len(fields)):
             if 'ppl' in fields[i].split():
                 ppls.append(fields[i].split()[-1])
+                break
 
         if 'fairseq.data.data_utils' in line:
             data_dir = line.strip().split()[-1]
+
+        if 'epoch 010' in line and 'valid' in line:
+            for i in range(len(fields)):
+                if 'ppl' in fields[i].split():
+                    ppl_10 = fields[i].split()[-1]
+                    break
 
         if 'done training' in line:
             if_finished = True
