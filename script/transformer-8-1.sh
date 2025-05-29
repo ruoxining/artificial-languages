@@ -12,19 +12,20 @@ GRAMMAR=$1
 SPLIT=$2
 
 mkdir -p "data-bin/base/${GRAMMAR}/${SPLIT}-dataset"
-mkdir -p "checkpoints/7-1/${GRAMMAR}/${SPLIT}-lstm"
-mkdir -p "lstm-results/7-1"
-mkdir -p "sentence_scores_lstm/7-1"
+mkdir -p "checkpoints/8-1/${GRAMMAR}/${SPLIT}-transformer"
+mkdir -p "transformer-results/8-1"
+mkdir -p "sentence_scores_transformer/8-1"
 
 # Base settings:
-# - hsize: 512
-# - embed dim: 64 (variation)
-# - layer: 2
+# - ffn hsize: 512
+# - embed dim: 256 (variation)
+# - decoder: 2
+# - head: 2
 # - data size: 10k
 # - epoch: full (500)
 # - batch: 4
-# - optimizer: adam + linear
-# - scheduler: linear
+# - optimizer: adam
+# - scheduler: inverse sqrt
 # - vocab size: 512
 # - tokenizer: sentencepiece
 
@@ -36,42 +37,44 @@ fairseq-preprocess --only-source \
     --workers 20
 
 fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/7-1/${GRAMMAR}/${SPLIT}-lstm" \
-    --arch lstm_lm \
+    --save-dir "checkpoints/8-1/${GRAMMAR}/${SPLIT}-transformer" \
+    --arch transformer_lm \
     --share-decoder-input-output-embed \
     --dropout 0.3 \
     --optimizer adam \
     --adam-betas '(0.9,0.98)' \
     --weight-decay 0.01 \
     --lr 0.0005 \
-    --lr-scheduler linear \
+    --lr-scheduler inverse_sqrt \
     --warmup-updates 4000 \
     --clip-norm 0.0 \
     --warmup-init-lr 1e-07 \
     --tokens-per-sample 512 \
     --sample-break-mode none \
-    --max-tokens 4096 \
+    --max-tokens 2048 \
     --update-freq 16 \
     --patience 5 \
     --max-update 10000 \
     --no-epoch-checkpoints \
     --no-last-checkpoints \
     --decoder-layers 2 \
-    --decoder-embed-dim 64 \
-    --decoder-hidden-size 512
+    --decoder-embed-dim 256 \
+    --decoder-out-embed-dim 256 \
+    --decoder-ffn-embed-dim 512 \
+    --decoder-attention-heads 2
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --path "checkpoints/7-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
+    --path "checkpoints/8-1/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
     --tokens-per-sample 512 \
     --gen-subset "valid" \
     --output-word-probs \
-    --quiet 2> "lstm-results/7-1/${GRAMMAR}.${SPLIT}.dev.txt"
+    --quiet 2> "transformer-results/8-1/${GRAMMAR}.${SPLIT}.dev.txt"
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --path "checkpoints/7-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
+    --path "checkpoints/8-1/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
     --tokens-per-sample 512 \
     --gen-subset "test" \
     --output-word-probs \
-    --quiet 2> "lstm-results/7-1/${GRAMMAR}.${SPLIT}.test.txt"
+    --quiet 2> "transformer-results/8-1/${GRAMMAR}.${SPLIT}.test.txt"
 
-python get_sentence_scores.py -i "lstm-results/7-1/${GRAMMAR}.${SPLIT}.test.txt" -O "sentence_scores_lstm/7-1/" 
+python get_sentence_scores.py -i "transformer-results/8-1/${GRAMMAR}.${SPLIT}.test.txt" -O "sentence_scores_transformer/8-1/" 
