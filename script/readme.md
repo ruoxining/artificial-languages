@@ -109,4 +109,4 @@ base setting:
     2. 512
 
 9. tokenizer
-    2. sentencepiece with gold
+    1. sentencepiece with gold
