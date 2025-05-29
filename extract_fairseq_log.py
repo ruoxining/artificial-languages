@@ -45,11 +45,14 @@ def get_all_from_log(input_file: str):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Extract the perplexity scores from fairseq logs into a CSV.")
-    parser.add_argument("-i", "--input_file", type=str, required=True,
-        help="Path to input folder containing .out files")
-    parser.add_argument("-O", "--output_folder", type=str, required=True,
-        help="Location to save output CSV")
+    parser = argparse.ArgumentParser(description='Extract the perplexity scores from fairseq logs into a CSV.')
+    parser.add_argument('-i', '--input_file', type=str, required=True,
+        help='Path to input folder containing .out files')
+    parser.add_argument('-O', '--output_folder', type=str, required=True,
+        help='Location to save output CSV')
+    parser.add_argument('-p', '--prefix', type=str, default='',
+        help='Optional prefix to filter input files (only process files starting with this prefix)')
+
     args = parser.parse_args()
 
     if not os.path.exists(args.output_folder):
@@ -61,7 +64,7 @@ if __name__ == '__main__':
         writer.writerow(['formation', 'grammar', 'div', 'model', 'ppl-10-epochs', 'final_ppl', 'if_finished'])
 
         for filename in os.listdir(args.input_file):
-            if filename.endswith('.out'):
+            if filename.endswith('.out') and (not args.prefix or filename.startswith(args.prefix)):
                 try:
                     input_file = os.path.join(args.input_file, filename)
                     final_ppl, ppl_10, formation, grammar, split, is_finished = get_all_from_log(input_file)
