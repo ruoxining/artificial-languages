@@ -11,10 +11,10 @@
 GRAMMAR=$1
 SPLIT=$2
 
-mkdir -p "data-bin-base/${GRAMMAR}/${SPLIT}-dataset"
-mkdir -p "checkpoints-base/${GRAMMAR}/${SPLIT}-transformer"
-mkdir -p "transformer-results-base"
-mkdir -p "sentence_scores_transformer-base"
+mkdir -p "data-bin/base/${GRAMMAR}/${SPLIT}-dataset"
+mkdir -p "checkpoints/base/${GRAMMAR}/${SPLIT}-transformer"
+mkdir -p "transformer-results/base"
+mkdir -p "sentence_scores_transformer/base"
 
 # Base settings:
 # - ffn hsize: 512
@@ -59,6 +59,7 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 2 \
     --decoder-embed-dim 128 \
+    --decoder-out-embed-dim 128 \
     --decoder-ffn-embed-dim 512 \
     --decoder-attention-heads 2
 

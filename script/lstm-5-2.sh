@@ -23,8 +23,8 @@ mkdir -p "sentence_scores_lstm/5-2"
 # - data size: 10k
 # - epoch: full (500)
 # - batch: 4
-# - optimizer: adam + linear
-# - scheduler: linear
+# - optimizer: adam + inverse_sqrt
+# - scheduler: inverse_sqrt
 # - vocab size: 512
 # - tokenizer: sentencepiece
 
@@ -44,7 +44,7 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --adam-betas '(0.9,0.98)' \
     --weight-decay 0.01 \
     --lr 0.0005 \
-    --lr-scheduler linear \
+    --lr-scheduler inverse_sqrt \
     --warmup-updates 4000 \
     --clip-norm 0.0 \
     --warmup-init-lr 1e-07 \
@@ -58,6 +58,7 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 16 \
     --decoder-embed-dim 128 \
+    --decoder-out-embed-dim 128 \
     --decoder-hidden-size 512
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \

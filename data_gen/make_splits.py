@@ -9,6 +9,7 @@ def create_splits(sample_file, num_splits, train, test, dev, output_folder):
     all_sentences = sentence_file.readlines()
     num_all_sent = len(all_sentences)
     grammar_name = sample_file[:-4].split("/")[-1]
+    grammar_name = grammar_name.split("_")[1]
     if not os.path.exists(os.path.join(output_folder, grammar_name)):
         os.mkdir(os.path.join(output_folder, grammar_name))
     grammar_output = os.path.join(output_folder, grammar_name)

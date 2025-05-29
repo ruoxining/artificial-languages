@@ -59,6 +59,7 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 2 \
     --decoder-embed-dim 128 \
+    --decoder-out-embed-dim 128 \
     --decoder-ffn-embed-dim 512 \
     --decoder-attention-heads 2 \
     --max-epoch 100

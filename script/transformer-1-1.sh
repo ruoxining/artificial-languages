@@ -11,17 +11,17 @@
 GRAMMAR=$1
 SPLIT=$2
 
-mkdir -p "data-bin/base/${GRAMMAR}/${SPLIT}-dataset"
-mkdir -p "checkpoints/2-2/${GRAMMAR}/${SPLIT}-transformer"
-mkdir -p "transformer-results/2-2"
-mkdir -p "sentence_scores_transformer/2-2"
+mkdir -p "data-bin/1-1/${GRAMMAR}/${SPLIT}-dataset"
+mkdir -p "checkpoints/1-1/${GRAMMAR}/${SPLIT}-transformer"
+mkdir -p "transformer-results/1-1"
+mkdir -p "sentence_scores_transformer/1-1"
 
-# Base settings:
+# 1-1 settings:
 # - ffn hsize: 512
 # - embed dim: 128
 # - decoder: 2
 # - head: 2
-# - data size: 10k
+# - data size: 20k
 # - epoch: full (500)
 # - batch: 4
 # - optimizer: adam
@@ -30,14 +30,14 @@ mkdir -p "sentence_scores_transformer/2-2"
 # - tokenizer: sentencepiece
 
 fairseq-preprocess --only-source \
-    --trainpref "data_gen/permuted_splits/base/${GRAMMAR}/${SPLIT}.trn" \
-    --validpref "data_gen/permuted_splits/base/${GRAMMAR}/${SPLIT}.dev" \
-    --testpref "data_gen/permuted_splits/base/${GRAMMAR}/${SPLIT}.tst" \
-    --destdir "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
+    --trainpref "data_gen/permuted_splits/1-1/${GRAMMAR}/${SPLIT}.trn" \
+    --validpref "data_gen/permuted_splits/1-1/${GRAMMAR}/${SPLIT}.dev" \
+    --testpref "data_gen/permuted_splits/1-1/${GRAMMAR}/${SPLIT}.tst" \
+    --destdir "data-bin/1-1/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/2-2/${GRAMMAR}/${SPLIT}-transformer" \
+fairseq-train --task language_modeling "data-bin/1-1/${GRAMMAR}/${SPLIT}-dataset" \
+    --save-dir "checkpoints/1-1/${GRAMMAR}/${SPLIT}-transformer" \
     --arch transformer_lm \
     --share-decoder-input-output-embed \
     --dropout 0.3 \
@@ -61,21 +61,20 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --decoder-embed-dim 128 \
     --decoder-out-embed-dim 128 \
     --decoder-ffn-embed-dim 512 \
-    --decoder-attention-heads 2 \
-    --max-epoch 50
+    --decoder-attention-heads 2
 
-fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --path "checkpoints/2-2/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
+fairseq-eval-lm "data-bin/1-1/${GRAMMAR}/${SPLIT}-dataset" \
+    --path "checkpoints/1-1/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
     --tokens-per-sample 512 \
     --gen-subset "valid" \
     --output-word-probs \
-    --quiet 2> "transformer-results/2-2/${GRAMMAR}.${SPLIT}.dev.txt"
+    --quiet 2> "transformer-results/1-1/${GRAMMAR}.${SPLIT}.dev.txt"
 
-fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --path "checkpoints/2-2/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
+fairseq-eval-lm "data-bin/1-1/${GRAMMAR}/${SPLIT}-dataset" \
+    --path "checkpoints/1-1/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \
     --tokens-per-sample 512 \
     --gen-subset "test" \
     --output-word-probs \
-    --quiet 2> "transformer-results/2-2/${GRAMMAR}.${SPLIT}.test.txt"
+    --quiet 2> "transformer-results/1-1/${GRAMMAR}.${SPLIT}.test.txt"
 
-python get_sentence_scores.py -i "transformer-results/2-2/${GRAMMAR}.${SPLIT}.test.txt" -O "sentence_scores_transformer/2-2/" 
+python get_sentence_scores.py -i "transformer-results/1-1/${GRAMMAR}.${SPLIT}.test.txt" -O "sentence_scores_transformer/1-1/" 
