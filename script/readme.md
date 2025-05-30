@@ -5,20 +5,20 @@ model-sec-exp.sh
 ## LSTM
 
 base setting:
-    hsize       : 512
-    embed dim   : 128
-    layer       : 2
-    data size   : 10k
-    epoch       : full (500 currently)
-    batch       : 4
-    avg sent    : ~ 70 char (max expansion 400, rand seed 0)
-    optimizer   : adam
-    scheduler   : inverse sqrt
-    vocab size  : 512
-    tokenizer   : sentencepiece
+    hsize           : 512
+    embed dim       : 128
+    layer           : 2
+    data size       : 20k
+    epoch           : full (500 currently)
+    batch           : 16
+    avg sent        : ~ 70 char (max expansion 400, rand seed 0)
+    optimizer       : adamw
+    scheduler       : inverse sqrt
+    vocab size      : 1264
+    tokenizer       : sentencepiece
 
 1. training data size
-    1. 20k
+    1. 10k
     2. 50k
     3. 100k
 
@@ -29,13 +29,10 @@ base setting:
 
 3. batch size
     1. 8
-    2. 16
-    3. 32
+    2. 32
 
-4. optimizer and scheduler
-    1. adam + linear
-    2. adamW + inverse sqrt
-    3. adamW + linear
+4. optimizer and scheduler (fairseq's adam is like adamw)
+    1. adamW + linear
 
 5. layers
     1. 8
@@ -52,25 +49,30 @@ base setting:
 8. tokenizer
     1. sentencepiece with gold
 
+9. dropout
+    1. 0
+    2. 0.1
 
 ## Transformer
 
 base setting:
-    ffn hsize   : 512
-    embed dim   : 128
-    decoder     : 2
-    head        : 2
-    data size   : 10k
-    epoch       : full (500 currently)
-    batch       : 4
-    avg sent    : ~ 70 char (max expansion 400, rand seed 0)
-    optimizer   : adam
-    scheduler   : inverse sqrt
-    vocab size  : 512
-    tokenizer   : sentencepiece
+    ffn hsize       : 512
+    embed dim       : 128
+    decoder input   : 128
+    decoder output  : 128
+    decoder         : 2
+    head            : 2
+    data size       : 20k
+    epoch           : full (500 currently)
+    batch           : 16
+    avg sent        : ~ 70 char (max expansion 400, rand seed 0)
+    optimizer       : adam
+    scheduler       : inverse sqrt
+    vocab size      : 512
+    tokenizer       : sentencepiece
 
 1. training data size
-    1. 20k
+    1. 10k
     2. 50k
     3. 100k
 
@@ -81,13 +83,10 @@ base setting:
 
 3. batch size
     1. 8
-    2. 16
-    3. 32
+    2. 32
 
 4. optimizer and scheduler
-    1. adam + linear
-    2. adamW + inverse sqrt
-    3. adamW + linear
+    2. adamW + linear
 
 5. decoder layers
     1. 4
@@ -108,5 +107,18 @@ base setting:
     1. 256
     2. 512
 
-9. tokenizer
+9. decoder input dim
+    1. 512
+
+10. decoder output dim
+    1. 512
+
+11. tokenizer
     1. sentencepiece with gold
+
+12. dropout
+    1. 0
+    2. 0.1
+
+13. attention dropout
+    1. 0

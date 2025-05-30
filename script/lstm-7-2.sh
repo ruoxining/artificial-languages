@@ -5,7 +5,7 @@
 #SBATCH --qos=m5
 #SBATCH --gres=gpu:1
 #SBATCH --time=1:00:00
-#SBATCH --mail-type=END,FAIL,TIME_LIMIT
+#SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --mail-user=ruoxining@outlook.com
 
 GRAMMAR=$1
@@ -16,16 +16,16 @@ mkdir -p "checkpoints/7-2/${GRAMMAR}/${SPLIT}-lstm"
 mkdir -p "lstm-results/7-2"
 mkdir -p "sentence_scores_lstm/7-2"
 
-# Base settings:
+# 7-2 settings:
 # - hsize: 512
-# - embed dim: 256 (variation)
+# - embed dim: 512
 # - layer: 2
 # - data size: 10k
 # - epoch: full (500)
-# - batch: 4
-# - optimizer: adam + linear
-# - scheduler: linear
-# - vocab size: 512
+# - batch: 16
+# - optimizer: adamw
+# - scheduler: inverse sqrt
+# - vocab size: 1264
 # - tokenizer: sentencepiece
 
 fairseq-preprocess --only-source \
@@ -39,26 +39,30 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --save-dir "checkpoints/7-2/${GRAMMAR}/${SPLIT}-lstm" \
     --arch lstm_lm \
     --share-decoder-input-output-embed \
+    --decoder-layers 2 \
     --dropout 0.3 \
     --optimizer adam \
     --adam-betas '(0.9,0.98)' \
     --weight-decay 0.01 \
     --lr 0.0005 \
-    --lr-scheduler linear \
-    --warmup-updates 4000 \
+    --lr-scheduler inverse_sqrt \
+    --warmup-updates 400 \
     --clip-norm 0.0 \
     --warmup-init-lr 1e-07 \
-    --tokens-per-sample 512 \
+    --tokens-per-sample 128 \
     --sample-break-mode none \
-    --max-tokens 4096 \
-    --update-freq 16 \
+    --max-tokens 512 \
+    --update-freq 4 \
     --patience 5 \
     --max-update 10000 \
     --no-epoch-checkpoints \
     --no-last-checkpoints \
     --decoder-layers 2 \
-    --decoder-embed-dim 256 \
-    --decoder-hidden-size 512
+    --decoder-embed-dim 512 \
+    --decoder-out-embed-dim 512 \
+    --decoder-hidden-size 512 \
+    --fp16 \
+    --reset-optimizer
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/7-2/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
