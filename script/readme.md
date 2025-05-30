@@ -31,7 +31,7 @@ base setting:
     1. 8
     2. 32
 
-4. optimizer and scheduler (fairseq's adam is like adamw)
+4. optimizer and scheduler (fairseq's adam is implemented as adamw)
     1. adamW + linear
 
 5. layers
@@ -52,6 +52,10 @@ base setting:
 9. dropout
     1. 0
     2. 0.1
+
+10. max expansion
+    1. 50
+    2. 800
 
 ## Transformer
 
@@ -122,3 +126,7 @@ base setting:
 
 13. attention dropout
     1. 0
+
+14. max expansion
+    1. 50
+    2. 800
