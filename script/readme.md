@@ -8,7 +8,7 @@ base setting:
     hsize           : 512
     embed dim       : 128
     layer           : 2
-    data size       : 10k
+    data size       : 20k
     epoch           : full (500 currently)
     batch           : 16
     avg sent        : ~ 70 char (max expansion 400, rand seed 0)
@@ -17,12 +17,8 @@ base setting:
     vocab size      : 1264
     tokenizer       : sentencepiece
 
-TODO: to move the initial data out of base folder. use 20k as the base directory
-
-
-
 1. training data size
-    1. 20k
+    1. 10k
     2. 50k
     3. 100k
 
@@ -36,8 +32,7 @@ TODO: to move the initial data out of base folder. use 20k as the base directory
     2. 32
 
 4. optimizer and scheduler (fairseq's adam is like adamw)
-    1. adamW + inverse sqrt
-    2. adamW + linear
+    1. adamW + linear
 
 5. layers
     1. 8
@@ -54,6 +49,9 @@ TODO: to move the initial data out of base folder. use 20k as the base directory
 8. tokenizer
     1. sentencepiece with gold
 
+9. dropout
+    1. 0
+    2. 0.1
 
 ## Transformer
 
@@ -64,7 +62,7 @@ base setting:
     decoder output  : 128
     decoder         : 2
     head            : 2
-    data size       : 10k
+    data size       : 20k
     epoch           : full (500 currently)
     batch           : 16
     avg sent        : ~ 70 char (max expansion 400, rand seed 0)
@@ -74,7 +72,7 @@ base setting:
     tokenizer       : sentencepiece
 
 1. training data size
-    1. 20k
+    1. 10k
     2. 50k
     3. 100k
 
@@ -88,7 +86,6 @@ base setting:
     2. 32
 
 4. optimizer and scheduler
-    1. adamW + inverse sqrt
     2. adamW + linear
 
 5. decoder layers
@@ -118,3 +115,10 @@ base setting:
 
 11. tokenizer
     1. sentencepiece with gold
+
+12. dropout
+    1. 0
+    2. 0.1
+
+13. attention dropout
+    1. 0
