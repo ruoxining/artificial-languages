@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --output=logs/%x_%j.out
 #SBATCH --mem=4G
-#SBATCH --cpus-per-task=20
+#SBATCH --cpus-per-task=1
 #SBATCH --qos=m5
 #SBATCH --gres=gpu:1
 #SBATCH --time=1:00:00
