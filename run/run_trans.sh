@@ -16,16 +16,16 @@ python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-12-2
 
 python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-13-1
 
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-5-1
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-5-2
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-5-1
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-5-2
 
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-1
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-2
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-3
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-1
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-2
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-6-3
 
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-1
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-2
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-3
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-1
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-2
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-7-3
 
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-8-1
-python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-8-2
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-8-1
+# python3 run/run_all_jobs.py -s 1 -n 6 --job_name transformer-8-2

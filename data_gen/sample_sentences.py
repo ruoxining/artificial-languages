@@ -106,8 +106,23 @@ def sample_sentences(grammar_file, n, m, output_folder, bracketing):
     output_file = open(os.path.join(output_folder, 
         "sample_" + grammar_name + ".txt") , 'w')
     grammar = PCFG(grammar_file)
-    for i in range(n):
-        output_file.write(grammar.sample_sentence(m, bracketing) + "\n")
+
+    # keep track of unique sentences
+    unique_sentences = set()
+    attempts = 0
+    max_attempts = n * 2  # allow some extra attempts to account for duplicates
+
+    while len(unique_sentences) < n and attempts < max_attempts:
+        sentence = grammar.sample_sentence(m, bracketing)
+        unique_sentences.add(sentence)
+        attempts += 1
+
+    # write unique sentences to file
+    for sentence in unique_sentences:
+        output_file.write(sentence + "\n")
+
+    if len(unique_sentences) < n:
+        print(f"Warning: Could only generate {len(unique_sentences)} unique sentences after {attempts} attempts")
 
 
 parser = argparse.ArgumentParser(description="Sample sentences from PCFG")
