@@ -3,6 +3,7 @@
 #SBATCH --mem=4G
 #SBATCH --cpus-per-task=20
 #SBATCH --qos=m5
+#SBATCH --constraint=u22
 #SBATCH --gres=gpu:1
 #SBATCH --time=1:00:00
 #SBATCH --mail-type=FAIL,TIME_LIMIT
