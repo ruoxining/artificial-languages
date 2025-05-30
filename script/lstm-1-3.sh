@@ -66,14 +66,14 @@ fairseq-train --task language_modeling "data-bin/1-3/${GRAMMAR}/${SPLIT}-dataset
 
 fairseq-eval-lm "data-bin/1-3/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/1-3/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
-    --tokens-per-sample 512 \
+    --tokens-per-sample 128 \
     --gen-subset "valid" \
     --output-word-probs \
     --quiet 2> "lstm-results/1-3/${GRAMMAR}.${SPLIT}.dev.txt"
 
 fairseq-eval-lm "data-bin/1-3/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/1-3/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
-    --tokens-per-sample 512 \
+    --tokens-per-sample 128 \
     --gen-subset "test" \
     --output-word-probs \
     --quiet 2> "lstm-results/1-3/${GRAMMAR}.${SPLIT}.test.txt"
