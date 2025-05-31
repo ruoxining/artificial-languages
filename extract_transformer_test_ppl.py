@@ -3,12 +3,12 @@ import re
 import csv
 
 ROOT_DIR = "transformer-results"
-SUFFIX = ".0.test.txt"
+SUFFIXES = [".0.test.txt", ".1.test.txt", ".2.test.txt"]
 PPL_REGEX = r"Perplexity:\s*([0-9.]+)"
 
 # specific directories
 settings = ["1-1", "1-2", "1-3",
-            "2-1", "2-2", "2-3",
+            # "2-1", "2-2", "2-3",
             "3-1", "3-2",
             "4-1",
             "12-1", "12-2",
@@ -16,7 +16,8 @@ settings = ["1-1", "1-2", "1-3",
             "5-1", "5-2",
             "6-1", "6-2", "6-3",
             "7-1", "7-2", "7-3",
-            "8-1", "8-2"]
+            "8-1", "8-2",
+            "base"]
 
 def extract_perplexity(file_path):
     with open(file_path, 'r') as f:
@@ -35,12 +36,17 @@ def collect_results():
             print(f"Skipping missing directory: {setting_path}")
             continue
         for fname in os.listdir(setting_path):
-            if fname.endswith(SUFFIX):
-                grammar = fname.split(".")[0]
+            if any(fname.endswith(suffix) for suffix in SUFFIXES):
+                parts = fname.split(".")  # ['001001', '1', 'test', 'txt']
+                if len(parts) < 3:
+                    print(f"Unexpected file name format: {fname}")
+                    continue
+                grammar = parts[0]
+                div = parts[1]
                 file_path = os.path.join(setting_path, fname)
                 try:
                     ppl = extract_perplexity(file_path)
-                    results.append((setting, grammar, ppl))
+                    results.append((setting, div, grammar, ppl))
                 except ValueError as e:
                     print(e)
     return results
@@ -48,7 +54,7 @@ def collect_results():
 def write_csv(results, output_csv):
     with open(output_csv, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["setting", "grammar", "perplexity"])
+        writer.writerow(["setting", "div", "grammar", "perplexity"])
         for row in results:
             writer.writerow(row)
 
