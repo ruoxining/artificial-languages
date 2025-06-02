@@ -65,8 +65,8 @@ TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/1-1/${GRAMMAR}/${SP
     --fp16"
 
 # Add restore-file parameter if checkpoint exists
-if [ -f "checkpoints/1-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt" ]; then
-    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/1-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt\""
+if [ -f "checkpoints/1-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/1-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt\""
 fi
 
 # Execute the training command
