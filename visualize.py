@@ -29,7 +29,6 @@ def visualize(input_file: str):
     plt.ylabel("Average Perplexity (over divs)")
     plt.xticks(ticks=range(len(grammar_list)), labels=grammar_list, rotation=90)
     plt.legend()
-    plt.tight_layout()
     plt.savefig("perplexity_plot.pdf")
 
 
