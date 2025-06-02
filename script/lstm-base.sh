@@ -20,12 +20,12 @@ mkdir -p "sentence_scores_lstm/base"
 # - hsize: 512
 # - embed dim: 128
 # - layer: 2
-# - data size: 10k
+# - data size: 20k
 # - epoch: full (500)
-# - batch: 4
-# - optimizer: adam
+# - batch: 16
+# - optimizer: adamw
 # - scheduler: inverse sqrt
-# - vocab size: 512
+# - vocab size: 1264
 # - tokenizer: sentencepiece
 
 fairseq-preprocess --only-source \
@@ -35,8 +35,9 @@ fairseq-preprocess --only-source \
     --destdir "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/base/${GRAMMAR}/${SPLIT}-lstm" \
+# Build the fairseq-train command
+TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${SPLIT}-dataset\" \
+    --save-dir \"checkpoints/base/${GRAMMAR}/${SPLIT}-lstm\" \
     --arch lstm_lm \
     --share-decoder-input-output-embed \
     --decoder-layers 2 \
@@ -59,9 +60,17 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 2 \
     --decoder-embed-dim 128 \
+    --decoder-out-embed-dim 128 \
     --decoder-hidden-size 512 \
-    --fp16 \
-    --reset-optimizer
+    --fp16"
+
+# Add restore-file parameter if checkpoint exists
+if [ -f "checkpoints/base/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/base/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt\""
+fi
+
+# Execute the training command
+eval $TRAIN_CMD
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/base/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \

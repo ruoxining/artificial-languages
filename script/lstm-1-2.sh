@@ -35,8 +35,9 @@ fairseq-preprocess --only-source \
     --destdir "data-bin/1-2/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/1-2/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/1-2/${GRAMMAR}/${SPLIT}-lstm" \
+# Build the fairseq-train command
+TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/1-2/${GRAMMAR}/${SPLIT}-dataset\" \
+    --save-dir \"checkpoints/1-2/${GRAMMAR}/${SPLIT}-lstm\" \
     --arch lstm_lm \
     --share-decoder-input-output-embed \
     --decoder-layers 2 \
@@ -61,8 +62,15 @@ fairseq-train --task language_modeling "data-bin/1-2/${GRAMMAR}/${SPLIT}-dataset
     --decoder-embed-dim 128 \
     --decoder-out-embed-dim 128 \
     --decoder-hidden-size 512 \
-    --fp16 \
-    --reset-optimizer
+    --fp16"
+
+# Add restore-file parameter if checkpoint exists
+if [ -f "checkpoints/1-2/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/1-2/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt\""
+fi
+
+# Execute the training command
+eval $TRAIN_CMD
 
 fairseq-eval-lm "data-bin/1-2/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/1-2/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \
