@@ -53,7 +53,7 @@ TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${S
     --weight-decay 0.01 \
     --lr 0.0005 \
     --lr-scheduler polynomial_decay \
-    --lr-polynomial-power 1.0 \
+    --power 1.0 \
     --warmup-updates 400 \
     --clip-norm 0.0 \
     --warmup-init-lr 1e-07 \
