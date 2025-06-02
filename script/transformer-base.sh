@@ -11,19 +11,21 @@
 GRAMMAR=$1
 SPLIT=$2
 
-mkdir -p "data-bin-base/${GRAMMAR}/${SPLIT}-dataset"
-mkdir -p "checkpoints-base/${GRAMMAR}/${SPLIT}-transformer"
-mkdir -p "transformer-results-base"
-mkdir -p "sentence_scores_transformer-base"
+mkdir -p "data-bin/base/${GRAMMAR}/${SPLIT}-dataset"
+mkdir -p "checkpoints/base/${GRAMMAR}/${SPLIT}-transformer"
+mkdir -p "transformer-results/base"
+mkdir -p "sentence_scores_transformer/base"
 
 # Base settings:
 # - ffn hsize: 512
 # - embed dim: 128
+# - decoder input: 128
+# - decoder output: 128
 # - decoder: 2
 # - head: 2
-# - data size: 10k
+# - data size: 20k
 # - epoch: full (500)
-# - batch: 4
+# - batch: 16
 # - optimizer: adam
 # - scheduler: inverse sqrt
 # - vocab size: 512
@@ -36,8 +38,9 @@ fairseq-preprocess --only-source \
     --destdir "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/base/${GRAMMAR}/${SPLIT}-transformer" \
+# Build the fairseq-train command
+TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${SPLIT}-dataset\" \
+    --save-dir \"checkpoints/base/${GRAMMAR}/${SPLIT}-transformer\" \
     --arch transformer_lm \
     --share-decoder-input-output-embed \
     --dropout 0.3 \
@@ -63,11 +66,17 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 2 \
     --decoder-embed-dim 128 \
-    --decoder-output-dim 128 \
     --decoder-ffn-embed-dim 512 \
     --decoder-attention-heads 2 \
-    --fp16 \
-    --reset-optimizer
+    --fp16"
+
+# Add restore-file parameter if checkpoint exists
+if [ -f "checkpoints/base/${GRAMMAR}/${SPLIT}-transformer/checkpoint_last.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/base/${GRAMMAR}/${SPLIT}-transformer/checkpoint_last.pt\""
+fi
+
+# Execute the training command
+eval $TRAIN_CMD
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/base/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \

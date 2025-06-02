@@ -20,7 +20,7 @@ mkdir -p "sentence_scores_lstm/9-1"
 # - hsize: 512
 # - embed dim: 128
 # - layer: 2
-# - data size: 10k
+# - data size: 20k
 # - epoch: full (500)
 # - batch: 16
 # - optimizer: adamW
@@ -36,9 +36,12 @@ fairseq-preprocess --only-source \
     --destdir "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/9-1/${GRAMMAR}/${SPLIT}-lstm" \
+# Build the fairseq-train command
+TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${SPLIT}-dataset\" \
+    --save-dir \"checkpoints/9-1/${GRAMMAR}/${SPLIT}-lstm\" \
     --arch lstm_lm \
+    --share-decoder-input-output-embed \
+    --decoder-layers 2 \
     --dropout 0.0 \
     --optimizer adam \
     --adam-betas '(0.9,0.98)' \
@@ -58,9 +61,17 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --no-last-checkpoints \
     --decoder-layers 2 \
     --decoder-embed-dim 128 \
+    --decoder-out-embed-dim 128 \
     --decoder-hidden-size 512 \
-    --fp16 \
-    --reset-optimizer
+    --fp16"
+
+# Add restore-file parameter if checkpoint exists
+if [ -f "checkpoints/9-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/9-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_last.pt\""
+fi
+
+# Execute the training command
+eval $TRAIN_CMD
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/9-1/${GRAMMAR}/${SPLIT}-lstm/checkpoint_best.pt" \

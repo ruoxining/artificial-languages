@@ -23,7 +23,7 @@ mkdir -p "sentence_scores_transformer/3-2"
 # - decoder output: 128
 # - decoder: 2
 # - head: 2
-# - data size: 10k
+# - data size: 20k
 # - epoch: full (500)
 # - batch: 32
 # - optimizer: adam
@@ -38,8 +38,9 @@ fairseq-preprocess --only-source \
     --destdir "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --workers 20
 
-fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
-    --save-dir "checkpoints/3-2/${GRAMMAR}/${SPLIT}-transformer" \
+# Build the fairseq-train command
+TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${SPLIT}-dataset\" \
+    --save-dir \"checkpoints/3-2/${GRAMMAR}/${SPLIT}-transformer\" \
     --arch transformer_lm \
     --share-decoder-input-output-embed \
     --dropout 0.3 \
@@ -58,7 +59,7 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --tokens-per-sample 128 \
     --sample-break-mode none \
     --max-tokens 512 \
-    --update-freq 8 \
+    --update-freq 16 \
     --patience 5 \
     --max-update 10000 \
     --no-epoch-checkpoints \
@@ -68,8 +69,15 @@ fairseq-train --task language_modeling "data-bin/base/${GRAMMAR}/${SPLIT}-datase
     --decoder-output-dim 128 \
     --decoder-ffn-embed-dim 512 \
     --decoder-attention-heads 2 \
-    --fp16 \
-    --reset-optimizer
+    --fp16"
+
+# Add restore-file parameter if checkpoint exists
+if [ -f "checkpoints/3-2/${GRAMMAR}/${SPLIT}-transformer/checkpoint_last.pt" ]; then
+    TRAIN_CMD="$TRAIN_CMD --restore-file \"checkpoints/3-2/${GRAMMAR}/${SPLIT}-transformer/checkpoint_last.pt\""
+fi
+
+# Execute the training command
+eval $TRAIN_CMD
 
 fairseq-eval-lm "data-bin/base/${GRAMMAR}/${SPLIT}-dataset" \
     --path "checkpoints/3-2/${GRAMMAR}/${SPLIT}-transformer/checkpoint_best.pt" \

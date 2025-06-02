@@ -2,40 +2,49 @@
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+import seaborn as sns
 
-
-def visualize(input_file: str):
+def visualize(input_file: str, output_folder: str):
     """Visualize the perplexity scores."""
     # read the csv file
     df = pd.read_csv(input_file)
-
-    # average perplexity across divs
-    avg_df = df.groupby(["grammar", "model"], as_index=False)["ppl-10-epochs"].mean()
-
-    # drop empty grammars and make sure they're strings
-    avg_df = avg_df[avg_df["grammar"] != ""]
-    avg_df["grammar"] = avg_df["grammar"].astype(str)
-
-    # get grammar list in the order they appear
-    grammar_list = avg_df["grammar"].unique().tolist()
-
-    # plot
-    plt.figure(figsize=(15, 6))
-    for model in avg_df["model"].unique():
-        subset = avg_df[avg_df["model"] == model]
-        plt.scatter(subset["grammar"], subset["ppl-10-epochs"], label=model)
-
-    plt.xlabel("Grammar")
-    plt.ylabel("Average Perplexity (over divs)")
-    plt.xticks(ticks=range(len(grammar_list)), labels=grammar_list, rotation=90)
-    plt.legend()
-    plt.savefig("perplexity_plot.pdf")
-
+    
+    # Drop empty columns and duplicates
+    df = df.drop(['ppl-10-epochs', 'if_finished'], axis=1)
+    df = df.drop_duplicates()
+    
+    # Convert final_ppl to numeric
+    df['final_ppl'] = pd.to_numeric(df['final_ppl'])
+    
+    # Create a figure with two subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(15, 12))
+    
+    # Plot 1: Box plot of perplexity by grammar
+    sns.boxplot(data=df, x='grammar', y='final_ppl', ax=ax1)
+    ax1.set_xlabel("Grammar")
+    ax1.set_ylabel("Perplexity")
+    ax1.set_title("Distribution of Perplexity Scores by Grammar")
+    ax1.tick_params(axis='x', rotation=90)
+    
+    # Plot 2: Scatter plot of perplexity by grammar
+    sns.scatterplot(data=df, x='grammar', y='final_ppl', ax=ax2)
+    ax2.set_xlabel("Grammar")
+    ax2.set_ylabel("Perplexity")
+    ax2.set_title("Perplexity Scores by Grammar")
+    ax2.tick_params(axis='x', rotation=90)
+    
+    # Adjust layout and save
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_folder, "perplexity_plot.pdf"))
+    plt.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Visualize the perplexity scores.")
     parser.add_argument("-i", "--input_file", type=str, required=True,
-        help="Path to input folder containing .out files")
+        help="Path to input CSV file")
+    parser.add_argument("-o", "--output_folder", type=str, required=True,
+        help="Path to output folder")
     args = parser.parse_args()
 
-    visualize(args.input_file)
+    visualize(args.input_file, args.output_folder)
