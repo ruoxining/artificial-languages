@@ -54,7 +54,7 @@ def collect_results():
 def write_csv(results, output_csv):
     with open(output_csv, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["setting", "div", "grammar", "perplexity"])
+        writer.writerow(["setting", "div", "grammar", "final_ppl"])
         for row in results:
             writer.writerow(row)
 
