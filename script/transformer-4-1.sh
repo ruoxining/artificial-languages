@@ -56,7 +56,7 @@ TRAIN_CMD="fairseq-train --task language_modeling \"data-bin/base/${GRAMMAR}/${S
     --power 1.0 \
     --warmup-updates 400 \
     --clip-norm 0.0 \
-    --end_learning_rate 1e-7 \
+    --end-learning-rate 1e-7 \
     --tokens-per-sample 128 \
     --sample-break-mode none \
     --max-tokens 512 \
