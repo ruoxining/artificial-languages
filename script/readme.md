@@ -55,7 +55,6 @@ base setting:
 
 9. dropout (*)
     1. 0
-    2. 0.1
     3. 0.2
     4. 0.3
 
@@ -132,7 +131,6 @@ base setting:
     1. 0
     2. 0.1
     3. 0.2
-    4. 0.3
 
 13. attention dropout (*)
     1. 0
