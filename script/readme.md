@@ -17,7 +17,7 @@ base setting:
     vocab size      : 1264
     tokenizer       : sentencepiece
 
-1. training data size
+1. training data size (*)
     1. 10k
     2. 50k
     3. 100k
@@ -30,28 +30,34 @@ base setting:
 3. batch size
     1. 8
     2. 32
+    3. 64
+    4. 128
 
 4. optimizer and scheduler (fairseq's adam is implemented as adamw)
     1. adamW + linear
 
-5. layers
+5. layers (*)
     1. 8
     2. 16
 
-6. hsize
+6. hsize (*)
     1. 256
     2. 1024
+    3. 128
 
-7. embed dim
+7. embed dim (*)
     1. 256
     2. 512
+    3. 1024
 
 8. tokenizer
     1. sentencepiece with gold
 
-9. dropout
+9. dropout (*)
     1. 0
     2. 0.1
+    3. 0.2
+    4. 0.3
 
 10. max expansion
     1. 50
@@ -75,7 +81,7 @@ base setting:
     vocab size      : 512
     tokenizer       : sentencepiece
 
-1. training data size
+1. training data size (*)
     1. 10k
     2. 50k
     3. 100k
@@ -88,34 +94,36 @@ base setting:
 3. batch size
     1. 8
     2. 32
+    3. 64
+    4. 128
 
 4. optimizer and scheduler
     2. adamW + linear
 
-5. decoder layers
+5. decoder layers (*)
     1. 4
     2. 6
     3. 8
+    4. 12
+    5. 16
+    6. 32
 
 6. attention heads
     1. 4
     2. 8
     3. 16
+    4. 12
 
 7. ffn hidden size
     1. 256
     2. 1024
     3. 2048
+    4. 64
 
 8. embed dim
     1. 256
     2. 512
-
-9. decoder input dim
-    1. 512
-
-10. decoder output dim
-    1. 512
+    3. 1024
 
 11. tokenizer
     1. sentencepiece with gold
@@ -123,9 +131,13 @@ base setting:
 12. dropout
     1. 0
     2. 0.1
+    3. 0.2
+    4. 0.3
 
-13. attention dropout
+13. attention dropout (*)
     1. 0
+    2. 0.2
+    3. 0.3
 
 14. max expansion
     1. 50
